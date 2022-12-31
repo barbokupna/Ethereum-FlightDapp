@@ -4,11 +4,14 @@ const fs = require('fs');
 
 module.exports = function(deployer) {
 
-    let firstAirline = '0xf17f52151EbEF6C7334FAD080c5704D77216b732';
-    deployer.deploy(FlightSuretyData)
-    .then(() => {
-        return deployer.deploy(FlightSuretyApp)
+    let firstAirline = '0x2ba8F718d3854E298A6DA21cb669172e085C51AF';
+    let firstAirlineName = 'Vietnam Airline';
+    deployer.deploy(FlightSuretyData, firstAirline, firstAirlineName)
+      .then(() => {
+        return deployer.deploy(FlightSuretyApp, FlightSuretyData.address)
                 .then(() => {
+
+                    
                     let config = {
                         localhost: {
                             url: 'http://localhost:8545',
