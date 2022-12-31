@@ -4,11 +4,12 @@ pragma solidity ^0.4.25;
 // OpenZeppelin's SafeMath library, when used correctly, protects agains such bugs
 // More info: https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/2018/november/smart-contract-insecurity-bad-arithmetic/
 
-
 /************************************************** */
 /* FlightSurety Smart Contract                      */
 /************************************************** */
 contract FlightSuretyApp {
+    // INterface to the Data Contract
+    IFlightSuretyData flightSuretyDataContract;
 
     /********************************************************************************************/
     /*                                       DATA VARIABLES                                     */
@@ -66,8 +67,10 @@ contract FlightSuretyApp {
      * @dev Contract constructor
      *
      */
-    constructor(address contractSuertyData) public {
+    constructor(address contractData) public {
         contractOwner = msg.sender;
+        flightSuretyDataContract =  IFlightSuretyData(contractData);
+
     }
 
     /********************************************************************************************/
@@ -86,12 +89,19 @@ contract FlightSuretyApp {
      * @dev Add an airline to the registration queue
      *
      */
-    function registerAirline()
+
+    function registerAirline(address airlineAddress, string name) external  returns (bool success, uint256 votes) {
+        flightSuretyDataContract.registerAirline(airlineAddress, name);
+
+        return (true, 0);
+    }
+
+    function getRegisteredAirlines()
         external
-        pure
-        returns (bool success, uint256 votes)
+        view
+        returns (address[] memory airlineAddresses)
     {
-        return (success, 0);
+        return flightSuretyDataContract.getRegisteredAirlines();
     }
 
     /**
@@ -295,4 +305,10 @@ contract FlightSuretyApp {
     }
 
     // endregion
+}
+
+interface IFlightSuretyData {
+    function registerAirline(address airlineAddress, string name) external;
+
+    function getRegisteredAirlines() external view returns (address[] memory);
 }

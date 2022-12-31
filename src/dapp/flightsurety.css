@@ -40,3 +40,9 @@ label.form {
 input {
     margin-right: 30px;
 }
+
+.bordered {
+    padding: 15px;
+    border: 1px solid darkorange;
+    border-radius: 8px;
+  }

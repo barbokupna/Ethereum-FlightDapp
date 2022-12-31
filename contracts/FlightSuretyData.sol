@@ -1,6 +1,7 @@
 pragma solidity ^0.4.25;
 
 
+
 contract FlightSuretyData {
 
     /********************************************************************************************/
@@ -78,7 +79,15 @@ contract FlightSuretyData {
      *      Can only be called from FlightSuretyApp contract
      *
      */
-    function registerAirline() external pure {}
+    function registerAirline(address airlineAddress, string  name) external
+    {
+
+    }
+
+    function getRegisteredAirlines() external view  returns (address[] memory)
+    {
+        
+    }
 
     /**
      * @dev Buy insurance for a flight
