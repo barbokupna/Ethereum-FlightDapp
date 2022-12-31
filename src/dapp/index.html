@@ -23,7 +23,7 @@
 
         <div id="display-wrapper" class="top-20">
         </div>
-        <div class="col top-20 bordered" >
+        <div class="col top-20 bordered">
             <label class="form">Flight</label> <input type="text" id="flight-number">
             <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
         </div>
@@ -35,10 +35,31 @@
             <btn class="btn btn-primary" id="register-airline">Register</btn>
         </div>
 
-        <div class="col top-20 bordered">
+        <fieldset class="top-20 bordered">
+            <legend class="legendFont">Fund Airline</legend>
             <div class="top-20">
                 <label>Registered Airlines:</label><select id="registeredAirlines"></select>
-           </div>
+            </div>
+
+
+            <div class="top-20">
+                <input type="text" id="amount" placeholder="Amount">
+                <btn class="btn btn-primary" id="fund-airline">Fund</btn>
+            </div>
+
+        </fieldset>
+
+        <div class="col top-20 bordered"  >
+            <div class="top-20">            
+                <label>Activated Airlines:</label><select id="activatedAirlines"></select>&nbsp;&nbsp;
+               
+            </div>
+    
+            <div class="top-20" >
+                <label class="form">Register Flight:</label>
+                <input type="text" id="number" placeholder="Number">
+                <btn class="btn btn-primary" id="register-flight">Register</btn>
+            </div>
         </div>
 
     </main>

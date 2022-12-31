@@ -22,7 +22,17 @@ import './flightsurety.css';
             let g = DOM.elid('registeredAirlines');
             result.forEach((airlineaddress) => {
                 displayList(airlineaddress, airlineaddress, g);
-           });
+            });
+        });
+
+        contract.getActivatedAirlines((error, result) => {
+            console.log(result);
+            console.log('getActivatedAirlines', error, result[0]);
+
+            let g = DOM.elid('activatedAirlines');
+            result.forEach((airlineaddress) => {
+                displayList(airlineaddress, airlineaddress, g);
+            });
         });
 
         // User-submitted transactions 
@@ -35,8 +45,7 @@ import './flightsurety.css';
                     console.log('registerAirline OK', result);
                     displayList(address, address, DOM.elid("registeredAirlines"));
                 }
-                else 
-                {
+                else {
                     console.log('registerAirline ERROR', error);
                 }
             });
@@ -44,11 +53,27 @@ import './flightsurety.css';
 
         DOM.elid('submit-oracle').addEventListener('click', () => {
             let flight = DOM.elid('flight-number').value;
-            // Write transaction
             contract.fetchFlightStatus(flight, (error, result) => {
                 display('Oracles', 'Trigger oracles', [{ label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp }]);
             });
         })
+
+
+        DOM.elid('fund-airline').addEventListener('click', () => {
+            let amount = DOM.elid('amount').value
+            var select = document.getElementById('registeredAirlines');
+            var value = select.options[select.selectedIndex].value;
+
+            contract.fundAirline(value, amount, (error, result) => {
+                console.log('fundAirline', error, result);
+                if (!error) {
+                    // TODO Update Active Airlines
+                }
+            });
+        });
+
+
+
 
     });
 

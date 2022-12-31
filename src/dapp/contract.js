@@ -14,7 +14,7 @@ export default class Contract {
         this.passengers = [];
     }
 
-    initialize(callback) {
+   initialize(callback) {
         this.web3.eth.getAccounts((error, accts) => {
 
             this.owner = accts[0];
@@ -55,27 +55,49 @@ export default class Contract {
     }
 
     registerAirline(airline, name, callback) {
-      
+
         let self = this;
         console.log('changed to account: ', self.owner)
 
         self.flightSuretyApp.methods
             .registerAirline(airline, name)
-            .send({ from: self.owner , gas: 100000}, (error, result) => {
+            .send({ from: self.owner, gas: 100000 }, (error, result) => {
                 callback(error, result);
             });
-        }
-   
+    }
+
 
     getRegisteredAirlines(callback) {
         console.log("result");
         let self = this;
         self.flightSuretyApp.methods.getRegisteredAirlines().call({}, (error, result) => {
             console.log("result2");
-           // console.log(this.web3.utils.hexToAscii(result[0]));
+            // console.log(this.web3.utils.hexToAscii(result[0]));
             // console.log(this.web3.utils.hexToAscii('0x4920686176652031303021'));
             callback(error, result);
         });
     }
+
+    fundAirline(address, amount, callback) {
+        let self = this;
+        self.flightSuretyApp.methods
+            .fundAirline(address, amount)
+            .send({ from: self.owner, gas: 100000 }, (error, result) => {
+                callback(error, result);
+            });
+    }
+
+    getActivatedAirlines(callback) {
+        console.log("result");
+        let self = this;
+        self.flightSuretyApp.methods.getActivatedAirlines().call({}, (error, result) => {
+            console.log("result2");
+            // console.log(this.web3.utils.hexToAscii(result[0]));
+            // console.log(this.web3.utils.hexToAscii('0x4920686176652031303021'));
+            callback(error, result);
+        });
+    }
+
+
 
 }

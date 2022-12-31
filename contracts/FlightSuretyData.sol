@@ -1,15 +1,11 @@
 pragma solidity ^0.4.25;
 
-
-
 contract FlightSuretyData {
-
     struct Airline {
         bool isRegistered;
         string name;
         uint256 amount;
     }
-
 
     /********************************************************************************************/
     /*                                       DATA VARIABLES                                     */
@@ -17,12 +13,11 @@ contract FlightSuretyData {
 
     address private contractOwner; // Account used to deploy contract
     bool private operational = true; // Blocks all state changes throughout the contract if false
+    uint256 private constant AIRLINE_REGISTRATION_FEE = 10 ether;
 
-
-    mapping(address => Airline) airlinesRegistered; 
+    mapping(address => Airline) airlinesRegistered;
     address[] private airlinesRegisteredLookup;
-  
-
+    address[] private airlinesActivatedLookup;
 
     /********************************************************************************************/
     /*                                       EVENT DEFINITIONS                                  */
@@ -32,9 +27,9 @@ contract FlightSuretyData {
      * @dev Constructor
      *      The deploying account becomes contractOwner
      */
-    constructor(address airlineAddress, string  airlineName) public {
+    constructor(address airlineAddress, string airlineName) public {
         contractOwner = msg.sender;
-         _registerAirline(airlineAddress, airlineName);
+        _registerAirline(airlineAddress, airlineName);
     }
 
     /********************************************************************************************/
@@ -93,20 +88,33 @@ contract FlightSuretyData {
      *      Can only be called from FlightSuretyApp contract
      *
      */
-    function registerAirline(address airlineAddress, string  name) external
-    {
-            _registerAirline( airlineAddress,  name);
+    function registerAirline(address airlineAddress, string name) external {
+        _registerAirline(airlineAddress, name);
     }
 
-      function _registerAirline(address airlineAddress, string name) private {
+    function _registerAirline(address airlineAddress, string name) private {
         // first ariline
         airlinesRegistered[airlineAddress] = Airline(true, name, 0);
         airlinesRegisteredLookup.push(airlineAddress);
     }
 
-    function getRegisteredAirlines() external view  returns (address[] memory)
-    {
+    function getRegisteredAirlines() external view returns (address[] memory) {
         return airlinesRegisteredLookup;
+    }
+
+    function fundAirline(address airlineAddress, uint256 amount) external {
+
+ airlinesActivatedLookup.push(airlineAddress);
+ 
+        uint256 currentAmount = airlinesRegistered[airlineAddress].amount + amount;
+        airlinesRegistered[airlineAddress].amount = currentAmount;
+        if (currentAmount >= AIRLINE_REGISTRATION_FEE) {
+            airlinesActivatedLookup.push(airlineAddress);
+        }
+    }
+
+    function getActivatedAirlines() external view returns (address[] memory) {
+        return airlinesActivatedLookup;
     }
 
     /**

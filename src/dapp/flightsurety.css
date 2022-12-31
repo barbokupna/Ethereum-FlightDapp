@@ -45,4 +45,20 @@ input {
     padding: 15px;
     border: 1px solid darkorange;
     border-radius: 8px;
-  }
+
+}
+.label {
+    position: absolute;
+    top: 40px;
+    left: 20px;
+    border: 2px solid red;
+    height: 20px;
+    width: 20%;
+    background-color: white;
+}
+
+.legendFont {
+    text-align: left;
+    font-size: 14px
+
+}

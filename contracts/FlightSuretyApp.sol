@@ -69,8 +69,7 @@ contract FlightSuretyApp {
      */
     constructor(address contractData) public {
         contractOwner = msg.sender;
-        flightSuretyDataContract =  IFlightSuretyData(contractData);
-
+        flightSuretyDataContract = IFlightSuretyData(contractData);
     }
 
     /********************************************************************************************/
@@ -90,7 +89,10 @@ contract FlightSuretyApp {
      *
      */
 
-    function registerAirline(address airlineAddress, string name) external  returns (bool success, uint256 votes) {
+    function registerAirline(address airlineAddress, string name)
+        external
+        returns (bool success, uint256 votes)
+    {
         flightSuretyDataContract.registerAirline(airlineAddress, name);
 
         return (true, 0);
@@ -102,6 +104,19 @@ contract FlightSuretyApp {
         returns (address[] memory airlineAddresses)
     {
         return flightSuretyDataContract.getRegisteredAirlines();
+    }
+
+    function fundAirline(address airlineAddress, uint256 amount) external {
+        // TODO -Check value, transfer to contract.
+        flightSuretyDataContract.fundAirline(airlineAddress, amount);
+    }
+
+    function getActivatedAirlines()
+        external
+        view
+        returns (address[] memory airlineAddresses)
+    {
+        return flightSuretyDataContract.getActivatedAirlines();
     }
 
     /**
@@ -311,4 +326,8 @@ interface IFlightSuretyData {
     function registerAirline(address airlineAddress, string name) external;
 
     function getRegisteredAirlines() external view returns (address[] memory);
+
+    function fundAirline(address airlineAddress, uint256 amount) external;
+
+    function getActivatedAirlines() external view returns (address[] memory);
 }
