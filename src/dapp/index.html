@@ -13,8 +13,8 @@
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="#">FlightSurety</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
-            aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
     </nav>
@@ -23,9 +23,24 @@
 
         <div id="display-wrapper" class="top-20">
         </div>
-        <div class="row top-20">
-            <label class="form">Flight</label> <input type="text" id="flight-number"> <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
+        <div class="col top-20 bordered" >
+            <label class="form">Flight</label> <input type="text" id="flight-number">
+            <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
         </div>
+
+        <div class="col top-20 bordered">
+            <label class="form">Register Airline:</label>
+            <input type="text" id="address" placeholder="Address">
+            <input type="text" id="name" placeholder="Name">
+            <btn class="btn btn-primary" id="register-airline">Register</btn>
+        </div>
+
+        <div class="col top-20 bordered">
+            <div class="top-20">
+                <label>Registered Airlines:</label><select id="registeredAirlines"></select>
+           </div>
+        </div>
+
     </main>
 
 </body>

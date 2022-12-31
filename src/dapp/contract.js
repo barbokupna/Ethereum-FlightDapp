@@ -53,4 +53,29 @@ export default class Contract {
                 callback(error, payload);
             });
     }
+
+    registerAirline(airline, name, callback) {
+      
+        let self = this;
+        console.log('changed to account: ', self.owner)
+
+        self.flightSuretyApp.methods
+            .registerAirline(airline, name)
+            .send({ from: self.owner , gas: 100000}, (error, result) => {
+                callback(error, result);
+            });
+        }
+   
+
+    getRegisteredAirlines(callback) {
+        console.log("result");
+        let self = this;
+        self.flightSuretyApp.methods.getRegisteredAirlines().call({}, (error, result) => {
+            console.log("result2");
+           // console.log(this.web3.utils.hexToAscii(result[0]));
+            // console.log(this.web3.utils.hexToAscii('0x4920686176652031303021'));
+            callback(error, result);
+        });
+    }
+
 }

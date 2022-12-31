@@ -4,12 +4,25 @@ pragma solidity ^0.4.25;
 
 contract FlightSuretyData {
 
+    struct Airline {
+        bool isRegistered;
+        string name;
+        uint256 amount;
+    }
+
+
     /********************************************************************************************/
     /*                                       DATA VARIABLES                                     */
     /********************************************************************************************/
 
     address private contractOwner; // Account used to deploy contract
     bool private operational = true; // Blocks all state changes throughout the contract if false
+
+
+    mapping(address => Airline) airlinesRegistered; 
+    address[] private airlinesRegisteredLookup;
+  
+
 
     /********************************************************************************************/
     /*                                       EVENT DEFINITIONS                                  */
@@ -21,6 +34,7 @@ contract FlightSuretyData {
      */
     constructor(address airlineAddress, string  airlineName) public {
         contractOwner = msg.sender;
+         _registerAirline(airlineAddress, airlineName);
     }
 
     /********************************************************************************************/
@@ -81,12 +95,18 @@ contract FlightSuretyData {
      */
     function registerAirline(address airlineAddress, string  name) external
     {
+            _registerAirline( airlineAddress,  name);
+    }
 
+      function _registerAirline(address airlineAddress, string name) private {
+        // first ariline
+        airlinesRegistered[airlineAddress] = Airline(true, name, 0);
+        airlinesRegisteredLookup.push(airlineAddress);
     }
 
     function getRegisteredAirlines() external view  returns (address[] memory)
     {
-        
+        return airlinesRegisteredLookup;
     }
 
     /**
