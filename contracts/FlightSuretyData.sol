@@ -1,9 +1,7 @@
 pragma solidity ^0.4.25;
 
-import "../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract FlightSuretyData {
-    using SafeMath for uint256;
 
     /********************************************************************************************/
     /*                                       DATA VARIABLES                                     */
@@ -20,7 +18,7 @@ contract FlightSuretyData {
      * @dev Constructor
      *      The deploying account becomes contractOwner
      */
-    constructor() public {
+    constructor(address airlineAddress, string  airlineName) public {
         contractOwner = msg.sender;
     }
 
