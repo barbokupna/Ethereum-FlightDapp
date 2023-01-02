@@ -7,6 +7,13 @@ contract FlightSuretyData {
         uint256 amount;
     }
 
+    struct Flight {
+        string flightNumber;
+        uint256 updatedTimestamp;
+        address airline;
+        uint8 statusCode;
+    }
+
     /********************************************************************************************/
     /*                                       DATA VARIABLES                                     */
     /********************************************************************************************/
@@ -14,10 +21,14 @@ contract FlightSuretyData {
     address private contractOwner; // Account used to deploy contract
     bool private operational = true; // Blocks all state changes throughout the contract if false
     uint256 private constant AIRLINE_REGISTRATION_FEE = 10 ether;
+    uint8 private constant STATUS_CODE_UNKNOWN = 0;
 
     mapping(address => Airline) airlinesRegistered;
     address[] private airlinesRegisteredLookup;
     address[] private airlinesActivatedLookup;
+
+    mapping(bytes32 => Flight) private flights;
+    bytes32[] flightsLookup;
 
     /********************************************************************************************/
     /*                                       EVENT DEFINITIONS                                  */
@@ -30,6 +41,13 @@ contract FlightSuretyData {
     constructor(address airlineAddress, string airlineName) public {
         contractOwner = msg.sender;
         _registerAirline(airlineAddress, airlineName);
+
+        // initial 1st 5 flights
+        _registerFlight(airlineAddress, "FLIGHT_INIT_1");
+        _registerFlight(airlineAddress, "FLIGHT_INIT_2");
+        _registerFlight(airlineAddress, "FLIGHT_INIT_3");
+        _registerFlight(airlineAddress, "FLIGHT_INIT_4");
+        _registerFlight(airlineAddress, "FLIGHT_INIT_5");
     }
 
     /********************************************************************************************/
@@ -103,10 +121,10 @@ contract FlightSuretyData {
     }
 
     function fundAirline(address airlineAddress, uint256 amount) external {
+        airlinesActivatedLookup.push(airlineAddress);
 
- airlinesActivatedLookup.push(airlineAddress);
- 
-        uint256 currentAmount = airlinesRegistered[airlineAddress].amount + amount;
+        uint256 currentAmount = airlinesRegistered[airlineAddress].amount +
+            amount;
         airlinesRegistered[airlineAddress].amount = currentAmount;
         if (currentAmount >= AIRLINE_REGISTRATION_FEE) {
             airlinesActivatedLookup.push(airlineAddress);
@@ -115,6 +133,22 @@ contract FlightSuretyData {
 
     function getActivatedAirlines() external view returns (address[] memory) {
         return airlinesActivatedLookup;
+    }
+
+    function registerFlight(address airlineAddress, string flightNumber) external {
+        uint256 timestamp = block.timestamp;
+        bytes32 flightKey = keccak256(
+            abi.encodePacked(airlineAddress, flightNumber, timestamp)
+        );
+
+        flights[flightKey] = Flight(
+            flightNumber,
+            timestamp,
+            airlineAddress,
+            STATUS_CODE_UNKNOWN
+        );
+
+        flightsLookup.push(flightKey);
     }
 
     /**

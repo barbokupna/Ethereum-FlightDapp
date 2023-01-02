@@ -98,6 +98,17 @@ export default class Contract {
         });
     }
 
+    registerFlight(number, callback) {
+        let self = this;
+        console.log('changed to account: ', self.account)
+        self.flightSuretyApp.methods
+            .registerFlight(number)
+            .send({ from: self.account , gas: 100000}, (error) => {
+                callback(error);
+            });
+    }
+
+
 
 
 }

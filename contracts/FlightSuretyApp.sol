@@ -119,6 +119,12 @@ contract FlightSuretyApp {
         return flightSuretyDataContract.getActivatedAirlines();
     }
 
+    function registerFlight(string flightNumber)
+        external
+    {
+        flightSuretyDataContract.registerFlight(msg.sender, flightNumber);
+    }
+
     /**
      * @dev Register a future flight for insuring.
      *
@@ -323,6 +329,7 @@ contract FlightSuretyApp {
 }
 
 interface IFlightSuretyData {
+    // airline
     function registerAirline(address airlineAddress, string name) external;
 
     function getRegisteredAirlines() external view returns (address[] memory);
@@ -330,4 +337,8 @@ interface IFlightSuretyData {
     function fundAirline(address airlineAddress, uint256 amount) external;
 
     function getActivatedAirlines() external view returns (address[] memory);
+
+    // flights
+    function registerFlight(address airlineAddress, string flightNumber)
+        external;
 }

@@ -73,6 +73,17 @@ import './flightsurety.css';
         });
 
 
+        DOM.elid('register-flight').addEventListener('click', () => {
+            let number = DOM.elid('flightNumber').value;
+            // Write transaction
+            contract.registerFlight(number, (error, result) => {
+                console.log('registerFlight', error, result);
+                if (!error) {
+                    
+                }
+            });
+        });
+
 
 
     });
