@@ -10,6 +10,7 @@ export default class Contract {
         this.flightSuretyApp = new this.web3.eth.Contract(FlightSuretyApp.abi, config.appAddress);
         this.initialize(callback);
         this.owner = null;
+        this.account = null;
         this.airlines = [];
         this.passengers = [];
     }
@@ -18,6 +19,7 @@ export default class Contract {
         this.web3.eth.getAccounts((error, accts) => {
 
             this.owner = accts[0];
+            this.account = accts[0];
 
             let counter = 1;
 
@@ -100,14 +102,24 @@ export default class Contract {
 
     registerFlight(number, callback) {
         let self = this;
-        console.log('changed to account: ', self.account)
+        console.log('changed to account: ', self.owner)
         self.flightSuretyApp.methods
-            .registerFlight(number)
-            .send({ from: self.account , gas: 100000}, (error) => {
-                callback(error);
+            .registerFlight(self.owner , number)
+            .send({ from: self.owner , gas: 100000}, (error, result) => {
+                callback(error,result);
             });
     }
 
+    getRegisteredFlights(callback) {
+        console.log("result");
+        let self = this;
+        self.flightSuretyApp.methods.getRegisteredFlights().call({}, (error, result) => {
+            console.log("result2");
+            // console.log(this.web3.utils.hexToAscii(result[0]));
+            // console.log(this.web3.utils.hexToAscii('0x4920686176652031303021'));
+            callback(error, result);
+        });
+    }
 
 
 

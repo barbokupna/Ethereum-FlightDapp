@@ -9,7 +9,7 @@ contract FlightSuretyData {
 
     struct Flight {
         string flightNumber;
-        uint256 updatedTimestamp;
+      //  uint256 updatedTimestamp;
         address airline;
         uint8 statusCode;
     }
@@ -27,7 +27,7 @@ contract FlightSuretyData {
     address[] private airlinesRegisteredLookup;
     address[] private airlinesActivatedLookup;
 
-    mapping(bytes32 => Flight) private flights;
+    mapping(bytes32 => Flight) flights;
     bytes32[] flightsLookup;
 
     /********************************************************************************************/
@@ -43,11 +43,13 @@ contract FlightSuretyData {
         _registerAirline(airlineAddress, airlineName);
 
         // initial 1st 5 flights
-        _registerFlight(airlineAddress, "FLIGHT_INIT_1");
-        _registerFlight(airlineAddress, "FLIGHT_INIT_2");
-        _registerFlight(airlineAddress, "FLIGHT_INIT_3");
-        _registerFlight(airlineAddress, "FLIGHT_INIT_4");
-        _registerFlight(airlineAddress, "FLIGHT_INIT_5");
+        string memory flightNumber = "FLIGHT_INIT_1";
+        _registerFlight(airlineAddress, flightNumber);
+
+     //   _registerFlight(airlineAddress, "FLIGHT_INIT_2");
+     //   _registerFlight(airlineAddress, "FLIGHT_INIT_3");
+     //   _registerFlight(airlineAddress, "FLIGHT_INIT_4");
+     //   _registerFlight(airlineAddress, "FLIGHT_INIT_5");
     }
 
     /********************************************************************************************/
@@ -136,20 +138,32 @@ contract FlightSuretyData {
     }
 
     function registerFlight(address airlineAddress, string flightNumber) external {
-        uint256 timestamp = block.timestamp;
+        _registerFlight(airlineAddress, flightNumber);
+    }
+
+    function _registerFlight(address airlineAddress, string flightNumber) private {
+        
+       // uint256 timestamp = block.timestamp;
         bytes32 flightKey = keccak256(
-            abi.encodePacked(airlineAddress, flightNumber, timestamp)
+            abi.encodePacked(airlineAddress, flightNumber)
         );
+        
 
         flights[flightKey] = Flight(
             flightNumber,
-            timestamp,
+        //    timestamp,
             airlineAddress,
             STATUS_CODE_UNKNOWN
         );
 
         flightsLookup.push(flightKey);
     }
+
+
+    function getFlightsLookup() external view returns (bytes32[] memory) {
+        return flightsLookup;
+    }
+
 
     /**
      * @dev Buy insurance for a flight

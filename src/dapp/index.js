@@ -27,12 +27,30 @@ import './flightsurety.css';
 
         contract.getActivatedAirlines((error, result) => {
             console.log(result);
-            console.log('getActivatedAirlines', error, result[0]);
+            //  console.log('getActivatedAirlines', error, result[0]);
+            if (result == null) {
+                console.log('getActivatedAirlinesNULL');
+            }
+            else {
+                let g = DOM.elid('activatedAirlines');
+                result.forEach((airlineaddress) => {
+                    displayList(airlineaddress, airlineaddress, g);
+                });
+            }
+        });
 
-            let g = DOM.elid('activatedAirlines');
-            result.forEach((airlineaddress) => {
-                displayList(airlineaddress, airlineaddress, g);
-            });
+        contract.getRegisteredFlights((error, result) => {
+            console.log('getRegisteredFlights');
+            // console.log('getRegisteredFlights', error, result[0]);
+            if (result == null) {
+                console.log('getRegisteredFlightsNULL');
+            }
+            else {
+                let g = DOM.elid('registeredFlights');
+                result.forEach((airlineaddress) => {
+                    displayList(airlineaddress, airlineaddress, g);
+                });
+            }
         });
 
         // User-submitted transactions 
@@ -79,7 +97,7 @@ import './flightsurety.css';
             contract.registerFlight(number, (error, result) => {
                 console.log('registerFlight', error, result);
                 if (!error) {
-                    
+
                 }
             });
         });
