@@ -23,61 +23,56 @@
 
         <div id="display-wrapper" class="top-20">
         </div>
-        <div class="col top-20 bordered">
-            <label class="form">Flight</label> <input type="text" id="flight-number">
-            <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
-        </div>
 
         <div class="col top-20 bordered">
-            <label class="form">Register Airline:</label>
             <input type="text" id="address" placeholder="Address">
             <input type="text" id="name" placeholder="Name">
-            <btn class="btn btn-primary" id="register-airline">Register</btn>
+            <btn class="btn btn-primary" id="register-airline">Register Airline</btn>
         </div>
 
         <fieldset class="top-20 bordered">
-            <legend class="legendFont">Fund Airline</legend>
+            <!--legend class="legendFont">Fund Airline</legend-->
             <div class="top-20">
-                <label>Registered Airlines:</label><select id="registeredAirlines"></select>
+                <label>Registered Airlines:&nbsp&nbsp </label><select id="registeredAirlines"></select>
             </div>
 
 
             <div class="top-20">
                 <input type="text" id="amount" placeholder="Amount">
-                <btn class="btn btn-primary" id="fund-airline">Fund</btn>
+                <btn class="btn btn-primary" id="fund-airline">Fund Airline</btn>
             </div>
 
         </fieldset>
 
         <div class="col top-20 bordered">
             <div class="top-20">
-                <label>Activated Airlines:</label><select id="activatedAirlines"></select>&nbsp;&nbsp;
-
+                <label>Active Airlines:&nbsp&nbsp</label><select id="activatedAirlines"></select>&nbsp;&nbsp;
             </div>
-
             <div class="top-20">
-                <label class="form">Register Flight:</label>
                 <input type="text" id="flightNumber" placeholder="Number">
-                <btn class="btn btn-primary" id="register-flight">Register</btn>
+                <btn class="btn btn-primary" id="register-flight">Register Flight</btn>
             </div>
-
-            <div class="top-20">
-                <label>Registered Flights:</label><select id="registeredFlights"></select>
-            </div>
-
         </div>
 
         <div class="col top-20 bordered">
             <div class="top-20">
-                <label class="form">Flight Insurance:</label>
-                <input type="text" id="insurance-flight" placeholder="Flight Number">
+                <label>Registered Flights:&nbsp&nbsp</label><select id="registeredFlights"></select>
+            </div>
+
+            <div class="col top-20 bordered">
                 <input type="text" id="insurance-amount" placeholder="Amount">
-                <btn class="btn btn-primary" id="buy-insurance">Purchase</btn>
+                <btn class="btn btn-primary" id="buy-insurance">Purchase Insurance</btn>
+            </div>
+
+            <div class="col top-20 bordered">
+                <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
             </div>
         </div>
 
+        <div class="col top-20 bordered">
+            <btn class="btn btn-primary" id="pay-passenger">Withdraw Insurance Payout</btn>
+        </div>
     </main>
-
 </body>
 
 </html>
