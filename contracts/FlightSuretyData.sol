@@ -1,7 +1,6 @@
 pragma solidity ^0.4.25;
 
 contract FlightSuretyData {
-
     struct Airline {
         bool isRegistered;
         string name;
@@ -10,7 +9,7 @@ contract FlightSuretyData {
 
     struct Flight {
         string flightNumber;
-      //  uint256 updatedTimestamp;
+        //  uint256 updatedTimestamp;
         address airline;
         uint8 statusCode;
     }
@@ -54,10 +53,10 @@ contract FlightSuretyData {
         string memory flightNumber = "FLIGHT_INIT_1";
         _registerFlight(airlineAddress, flightNumber);
 
-     //   _registerFlight(airlineAddress, "FLIGHT_INIT_2");
-     //   _registerFlight(airlineAddress, "FLIGHT_INIT_3");
-     //   _registerFlight(airlineAddress, "FLIGHT_INIT_4");
-     //   _registerFlight(airlineAddress, "FLIGHT_INIT_5");
+        //   _registerFlight(airlineAddress, "FLIGHT_INIT_2");
+        //   _registerFlight(airlineAddress, "FLIGHT_INIT_3");
+        //   _registerFlight(airlineAddress, "FLIGHT_INIT_4");
+        //   _registerFlight(airlineAddress, "FLIGHT_INIT_5");
     }
 
     /********************************************************************************************/
@@ -145,21 +144,23 @@ contract FlightSuretyData {
         return airlinesActivatedLookup;
     }
 
-    function registerFlight(address airlineAddress, string flightNumber) external {
+    function registerFlight(address airlineAddress, string flightNumber)
+        external
+    {
         _registerFlight(airlineAddress, flightNumber);
     }
 
-    function _registerFlight(address airlineAddress, string flightNumber) private {
-        
-       // uint256 timestamp = block.timestamp;
+    function _registerFlight(address airlineAddress, string flightNumber)
+        private
+    {
+        // uint256 timestamp = block.timestamp;
         bytes32 flightKey = keccak256(
             abi.encodePacked(airlineAddress, flightNumber)
         );
-        
 
         flights[flightKey] = Flight(
             flightNumber,
-        //    timestamp,
+            //    timestamp,
             airlineAddress,
             STATUS_CODE_UNKNOWN
         );
@@ -171,25 +172,22 @@ contract FlightSuretyData {
         return flightsLookup;
     }
 
+    function buyInsurance(
+        bytes32 flightKey,
+        uint256 amount,
+        address buyer
+    ) external payable {
+        Insurance[] ins = insuranceBought[flightKey];
+        ins.push(Insurance(buyer, amount));
+    }
 
-    function buyInsurance(bytes32 flightKey, uint256 amount, address buyer) external payable
-    {
-        Insurance[] ins =  insuranceBought[flightKey];
-        ins.push(Insurance(buyer, amount)); 
-    }
-    
-    function creditInsurees() external  
-    {
-        
-    }
+    function creditInsurees() external {}
 
     /**
      *  @dev Transfers eligible payout funds to insuree
      *
      */
     function pay() external pure {}
-
-    
 
     function getFlightKey(
         address airline,

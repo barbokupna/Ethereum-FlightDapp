@@ -15,7 +15,7 @@ export default class Contract {
         this.passengers = [];
     }
 
-   initialize(callback) {
+    initialize(callback) {
         this.web3.eth.getAccounts((error, accts) => {
 
             this.owner = accts[0];
@@ -104,9 +104,9 @@ export default class Contract {
         let self = this;
         console.log('changed to account: ', self.owner)
         self.flightSuretyApp.methods
-            .registerFlight(self.owner , number)
-            .send({ from: self.owner , gas: 100000}, (error, result) => {
-                callback(error,result);
+            .registerFlight(self.owner, number)
+            .send({ from: self.owner, gas: 100000 }, (error, result) => {
+                callback(error, result);
             });
     }
 
@@ -121,12 +121,12 @@ export default class Contract {
         });
     }
 
-    buyInsurance(flightKey,amount,  callback) {
+    buyInsurance(flightKey, amount, callback) {
         let self = this;
         console.log('changed to account: ', self.account)
         self.flightSuretyApp.methods
             .buyInsurance(flightKey, amount)
-            .send({ from: self.account , gas: 100000}, (error, result) => {
+            .send({ from: self.account, gas: 100000 }, (error, result) => {
                 callback(error, result);
             });
     }
