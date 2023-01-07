@@ -120,19 +120,22 @@ contract FlightSuretyApp {
     }
 
     function registerFlight(address airlineAddress, string flightNumber)
-        external  returns (address votes)
+        external
+        returns (address votes)
     {
-       flightSuretyDataContract.registerFlight(airlineAddress, flightNumber);
+        flightSuretyDataContract.registerFlight(airlineAddress, flightNumber);
 
-        return ( airlineAddress);
+        return (airlineAddress);
     }
 
-    function getRegisteredFlights() external view returns (bytes32[] memory)
-    {
+    function getRegisteredFlights() external view returns (bytes32[] memory) {
         return flightSuretyDataContract.getFlightsLookup();
-       
     }
 
+   function buyInsurance(bytes32 flightKey, uint256 amount) external
+   {
+        flightSuretyDataContract.buyInsurance(flightKey, amount, msg.sender);
+   }
 
     /**
      * @dev Called after oracle has updated flight status
@@ -346,4 +349,6 @@ interface IFlightSuretyData {
         external;
 
     function getFlightsLookup() external view returns (bytes32[] memory);
+
+    function buyInsurance(bytes32 flightKey, uint256 amount, address buyer) external;
 }

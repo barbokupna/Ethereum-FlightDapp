@@ -1,6 +1,7 @@
 pragma solidity ^0.4.25;
 
 contract FlightSuretyData {
+
     struct Airline {
         bool isRegistered;
         string name;
@@ -12,6 +13,11 @@ contract FlightSuretyData {
       //  uint256 updatedTimestamp;
         address airline;
         uint8 statusCode;
+    }
+
+    struct Insurance {
+        address passenger;
+        uint256 amount;
     }
 
     /********************************************************************************************/
@@ -29,6 +35,8 @@ contract FlightSuretyData {
 
     mapping(bytes32 => Flight) flights;
     bytes32[] flightsLookup;
+
+    mapping(string => Insurance[]) insuranceBought;
 
     /********************************************************************************************/
     /*                                       EVENT DEFINITIONS                                  */
@@ -159,22 +167,21 @@ contract FlightSuretyData {
         flightsLookup.push(flightKey);
     }
 
-
     function getFlightsLookup() external view returns (bytes32[] memory) {
         return flightsLookup;
     }
 
 
-    /**
-     * @dev Buy insurance for a flight
-     *
-     */
-    function buy() external payable {}
-
-    /**
-     *  @dev Credits payouts to insurees
-     */
-    function creditInsurees() external pure {}
+    function buyInsurance(bytes32 flightKey, uint256 amount, address buyer) external payable
+    {
+        Insurance[] ins =  insuranceBought[flightKey];
+        ins.push(Insurance(buyer, amount)); 
+    }
+    
+    function creditInsurees() external  
+    {
+        
+    }
 
     /**
      *  @dev Transfers eligible payout funds to insuree
@@ -182,12 +189,7 @@ contract FlightSuretyData {
      */
     function pay() external pure {}
 
-    /**
-     * @dev Initial funding for the insurance. Unless there are too many delayed flights
-     *      resulting in insurance payouts, the contract should be self-sustaining
-     *
-     */
-    function fund() public payable {}
+    
 
     function getFlightKey(
         address airline,

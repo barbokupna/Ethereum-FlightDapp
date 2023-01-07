@@ -121,6 +121,20 @@ export default class Contract {
         });
     }
 
+    buyInsurance(flightKey,amount,  callback) {
+        let self = this;
+        console.log('changed to account: ', self.account)
+        self.flightSuretyApp.methods
+            .buyInsurance(flightKey, amount)
+            .send({ from: self.account , gas: 100000}, (error, result) => {
+                callback(error, result);
+            });
+    }
 
-
+    payPassenger(callback) {
+        let self = this;
+        self.flightSuretyApp.methods.payPassenger().send({ from: self.account, gas: 999999999 }, (error, result) => {
+            callback(error, result);
+        });
+    }
 }

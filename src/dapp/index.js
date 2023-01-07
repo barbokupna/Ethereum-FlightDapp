@@ -102,6 +102,27 @@ import './flightsurety.css';
             });
         });
 
+        DOM.elid('buy-insurance').addEventListener('click', () => {
+            let flight = DOM.elid('insurance-flight').value;
+            let amount = DOM.elid('insurance-amount').value;
+            // Write transaction
+            contract.buyInsurance(flight, amount, (error, result) => {
+                console.log('buyInsurance', error, result);
+                if (!error) {
+                }
+            });
+        });
+
+        DOM.elid('pay-passenger').addEventListener('click', () => {
+            let flight = DOM.elid('payInsurance').value;
+            // Write transaction
+            contract.payPassenger((error, result) => {
+                if (!error)
+                    alert(`You withdrawed from ${flight} successfully`);
+            });
+        });
+
+
 
 
     });
