@@ -136,6 +136,11 @@ contract FlightSuretyApp {
         flightSuretyDataContract.buyInsurance(flightKey, amount, msg.sender);
     }
 
+    function payPassenger() external
+    {
+        flightSuretyDataContract.payPassenger(msg.sender);
+    }
+
     /**
      * @dev Called after oracle has updated flight status
      *
@@ -145,7 +150,11 @@ contract FlightSuretyApp {
         string memory flight,
         uint256 timestamp,
         uint8 statusCode
-    ) internal pure {}
+    ) internal {
+        if (statusCode == STATUS_CODE_LATE_AIRLINE) {
+            flightSuretyDataContract.creditPassengerImsurance();
+        }
+    }
 
     // Generate a request for oracles to fetch flight information
     function fetchFlightStatus(
@@ -296,24 +305,20 @@ contract FlightSuretyApp {
     function generateIndexes(address account) internal returns (uint8[3]) {
         uint8[3] memory indexes;
         indexes[0] = getRandomIndex(account);
-
         indexes[1] = indexes[0];
         while (indexes[1] == indexes[0]) {
             indexes[1] = getRandomIndex(account);
         }
-
         indexes[2] = indexes[1];
         while ((indexes[2] == indexes[0]) || (indexes[2] == indexes[1])) {
             indexes[2] = getRandomIndex(account);
         }
-
         return indexes;
     }
 
     // Returns array of three non-duplicating integers from 0-9
     function getRandomIndex(address account) internal returns (uint8) {
         uint8 maxValue = 10;
-
         // Pseudo random number...the incrementing nonce adds variation
         uint8 random = uint8(
             uint256(
@@ -329,7 +334,6 @@ contract FlightSuretyApp {
 
         return random;
     }
-
     // endregion
 }
 
@@ -354,4 +358,8 @@ interface IFlightSuretyData {
         uint256 amount,
         address buyer
     ) external;
+
+    function creditPassengerInsurance(bytes32 flightKey) external;
+
+    function payPassenger(address passengerAddress) external;
 }

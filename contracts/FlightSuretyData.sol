@@ -36,6 +36,7 @@ contract FlightSuretyData {
     bytes32[] flightsLookup;
 
     mapping(string => Insurance[]) insuranceBought;
+    mapping(address => uint256) passengerAmountToCollect;
 
     /********************************************************************************************/
     /*                                       EVENT DEFINITIONS                                  */
@@ -181,13 +182,24 @@ contract FlightSuretyData {
         ins.push(Insurance(buyer, amount));
     }
 
-    function creditInsurees() external {}
+    function creditPassengerInsurance(bytes32 flightKey) external {
+        Insurance[] ins = insuranceBought[flightKey];
+        for (uint8 i = 0; i <= ins.length; i++) {
+            ins[i].creditAmount = ins[i].amount + (ins[i].amount) / 2;
+            ins[i].amount = 0;
+            passengerAmountToCollect[ins.passenger] = ins[i].creditAmount;
+        }
+    }
 
     /**
      *  @dev Transfers eligible payout funds to insuree
      *
      */
-    function pay() external pure {}
+    function payPassenger(address passengerAddress) external {
+        uint256 amount = passengerAmountToCollect[passengerAddress];
+        passengerAmountToCollect[passengerAddress] = 0;
+        payable(passengerAddress).transfer(amount);
+    }
 
     function getFlightKey(
         address airline,
