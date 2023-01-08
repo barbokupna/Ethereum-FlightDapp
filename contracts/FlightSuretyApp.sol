@@ -196,6 +196,11 @@ contract FlightSuretyApp {
         external
         requireIsOperational
     {
+         require(
+            amount <= PASSANGER_MAX_INSURANCE,
+            "MAX Passenget Insurance to Purchase = 1 Eth"
+        );
+
         require(
             amount <= msg.sender.balance,
             "Not Enought Funds To Purchase The Insurance"

@@ -9,7 +9,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
-<form>
+<body>
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="#">FlightSurety</a>
@@ -38,8 +38,12 @@
 
 
             <div class="top-20">
-                <input type="text" id="amount" placeholder="Amount">
-                <btn class="btn btn-primary" id="fund-airline">Fund Airline</btn>
+
+                <input type="number" id="amount" name="Amount"   placeholder="Amount of Eth" required >
+                <span class="validity"></span>
+                <input type="submit"  class="btn btn-primary"  id="fund-airline"  value="Fund Airline" title="Fund Airline">
+
+
             </div>
 
         </fieldset>
@@ -74,6 +78,6 @@
             <btn class="btn btn-primary" id="pay-passenger">Withdraw Insurance Payout</btn>
         </div>
     </main>
-</form>
+</body>
 
 </html>
