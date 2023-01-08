@@ -196,6 +196,10 @@ contract FlightSuretyApp {
         external
         requireIsOperational
     {
+        require(
+            amount <= msg.sender.balance,
+            "Not Enought Funds To Purchase The Insurance"
+        );
         flightSuretyDataContract.buyInsurance(flightKey, amount, msg.sender);
     }
 

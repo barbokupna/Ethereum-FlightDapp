@@ -9,7 +9,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
-<body>
+<form>
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="#">FlightSurety</a>
@@ -60,8 +60,9 @@
             </div>
 
             <div class="col top-20 bordered">
-                <input type="text" id="insurance-amount" placeholder="Amount">
-                <btn class="btn btn-primary" id="buy-insurance">Purchase Insurance</btn>
+                <input type="number" id="insurance-amount" name="Amount"  max="1"  placeholder="Amount (max 1 Ether)" required >
+                <span class="validity"></span>
+                <input type="submit"  class="btn btn-primary" id="buy-insurance"  value="Purchase Insurance" title="Purchase Insurance">
             </div>
 
             <div class="col top-20 bordered">
@@ -73,6 +74,6 @@
             <btn class="btn btn-primary" id="pay-passenger">Withdraw Insurance Payout</btn>
         </div>
     </main>
-</body>
+</form>
 
 </html>

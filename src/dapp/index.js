@@ -103,8 +103,13 @@ import './flightsurety.css';
         });
 
         DOM.elid('buy-insurance').addEventListener('click', () => {
-            let flight = DOM.elid('insurance-flight').value;
+            //let flight = DOM.elid('insurance-flight').value;
+            var select = document.getElementById('registeredFlights');
+            var flight = select.options[select.selectedIndex].value;
+
             let amount = DOM.elid('insurance-amount').value;
+            if (amount > 1)
+                console.log('buyInsurance', "Max Value - 1 Ether");
             // Write transaction
             contract.buyInsurance(flight, amount, (error, result) => {
                 console.log('buyInsurance', error, result);
