@@ -18,8 +18,8 @@ export default class Contract {
     initialize(callback) {
         this.web3.eth.getAccounts((error, accts) => {
 
-            this.owner = accts[0];
-            this.account = accts[0];
+            this.owner = accts[1];
+            this.account = accts[1];
 
             let counter = 1;
 
@@ -44,13 +44,13 @@ export default class Contract {
 
     fetchFlightStatus(flight, callback) {
         let self = this;
-        let payload = {
-            airline: self.airlines[0],
-            flight: flight,
-            timestamp: Math.floor(Date.now() / 1000)
-        }
+        // let payload = {
+        //     airline: self.airlines[0],
+        //     flight: flight,
+        //       timestamp: Math.floor(Date.now() / 1000)
+        //   }
         self.flightSuretyApp.methods
-            .fetchFlightStatus(payload.airline, payload.flight, payload.timestamp)
+            .fetchFlightStatus(flight)//payload.airline, payload.flight, payload.timestamp)
             .send({ from: self.owner }, (error, result) => {
                 callback(error, payload);
             });
@@ -63,7 +63,7 @@ export default class Contract {
 
         self.flightSuretyApp.methods
             .registerAirline(airline, name)
-            .send({ from: self.owner, gas: 100000 }, (error, result) => {
+            .send({ from: self.owner, gas: 300000 }, (error, result) => {
                 callback(error, result);
             });
     }
@@ -80,10 +80,10 @@ export default class Contract {
         });
     }
 
-    fundAirline(address, amount, callback) {
+    fundAirline(amount, callback) {
         let self = this;
         self.flightSuretyApp.methods
-            .fundAirline(address, amount)
+            .fundAirline(amount)
             .send({ from: self.owner, gas: 100000 }, (error, result) => {
                 callback(error, result);
             });
@@ -131,9 +131,9 @@ export default class Contract {
             });
     }
 
-    payPassenger(callback) {
+    withdrawInsurancePayout(callback) {
         let self = this;
-        self.flightSuretyApp.methods.payPassenger().send({ from: self.account, gas: 999999999 }, (error, result) => {
+        self.flightSuretyApp.methods.withdrawInsurancePayout().send({ from: self.account, gas: 999999999 }, (error, result) => {
             callback(error, result);
         });
     }

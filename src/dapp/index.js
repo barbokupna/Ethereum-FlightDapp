@@ -79,25 +79,25 @@ import './flightsurety.css';
 
         DOM.elid('fund-airline').addEventListener('click', () => {
             let amount = DOM.elid('amount').value
-            var select = document.getElementById('registeredAirlines');
-            var value = select.options[select.selectedIndex].value;
+            // USED FOR Testing    var select = document.getElementById('registeredAirlines');
+            // USED FOR Testing    var value = select.options[select.selectedIndex].value;
 
-            contract.fundAirline(value, amount, (error, result) => {
+            contract.fundAirline(amount, (error, result) => {
                 console.log('fundAirline', error, result);
                 if (!error) {
-                    // TODO Update Active Airlines
+                    console.log('fundAirline OK', result);
+                    displayList(address, address, DOM.elid("activatedAirlines"));
                 }
             });
         });
-
-
         DOM.elid('register-flight').addEventListener('click', () => {
             let number = DOM.elid('flightNumber').value;
             // Write transaction
             contract.registerFlight(number, (error, result) => {
                 console.log('registerFlight', error, result);
                 if (!error) {
-
+                    console.log('registerFlight OK', result);
+                    displayList(address, address, DOM.elid("registeredFlights"));
                 }
             });
         });
@@ -114,16 +114,12 @@ import './flightsurety.css';
         });
 
         DOM.elid('pay-passenger').addEventListener('click', () => {
-            let flight = DOM.elid('payInsurance').value;
             // Write transaction
-            contract.payPassenger((error, result) => {
+            contract.withdrawInsurancePayout((error, result) => {
                 if (!error)
-                    alert(`You withdrawed from ${flight} successfully`);
+                    alert('The withdrawal was successfull');
             });
         });
-
-
-
 
     });
 

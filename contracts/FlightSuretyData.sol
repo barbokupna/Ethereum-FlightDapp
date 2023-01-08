@@ -26,7 +26,7 @@ contract FlightSuretyData {
 
     address private contractOwner; // Account used to deploy contract
     bool private operational = true; // Blocks all state changes throughout the contract if false
-    uint256 private constant AIRLINE_REGISTRATION_FEE = 10 ether;
+    uint256 private constant AIRLINE_REGISTRATION_FEE = 10;
     uint8 private constant STATUS_CODE_UNKNOWN = 0;
 
     mapping(address => Airline) airlinesRegistered;
@@ -52,13 +52,16 @@ contract FlightSuretyData {
         _registerAirline(airlineAddress, airlineName);
 
         // initial 1st 5 flights
-        string memory flightNumber = "FLIGHT_INIT_1";
-        _registerFlight(airlineAddress, flightNumber);
-
-        //   _registerFlight(airlineAddress, "FLIGHT_INIT_2");
-        //   _registerFlight(airlineAddress, "FLIGHT_INIT_3");
-        //   _registerFlight(airlineAddress, "FLIGHT_INIT_4");
-        //   _registerFlight(airlineAddress, "FLIGHT_INIT_5");
+        string[5] memory flightNames = [
+            "FLIGHT_INIT_1",
+            "FLIGHT_INIT_2",
+            "FLIGHT_INIT_3",
+            "FLIGHT_INIT_4",
+            "FLIGHT_INIT_5"
+        ];
+        for (uint8 i = 0; i < flightNames.length; i++) {
+            _registerFlight(airlineAddress, flightNames[i]);
+        }
     }
 
     /********************************************************************************************/
@@ -137,10 +140,16 @@ contract FlightSuretyData {
         requireIsOperational
         returns (bool isRegistered, uint256 amount)
     {
-       return (airlinesRegistered[airlineAddress].isRegistered, airlinesRegistered[airlineAddress].amount);
+        return (
+            airlinesRegistered[airlineAddress].isRegistered,
+            airlinesRegistered[airlineAddress].amount
+        );
     }
 
-    function fundAirline(address airlineAddress, uint256 amount) external {
+    function fundAirline(address airlineAddress, uint256 amount)
+        external
+        requireIsOperational
+    {
         airlinesActivatedLookup.push(airlineAddress);
 
         uint256 currentAmount = airlinesRegistered[airlineAddress].amount +
@@ -151,18 +160,25 @@ contract FlightSuretyData {
         }
     }
 
-    function getActivatedAirlines() external view returns (address[] memory) {
+    function getActivatedAirlines()
+        external
+        view
+        requireIsOperational
+        returns (address[] memory)
+    {
         return airlinesActivatedLookup;
     }
 
     function registerFlight(address airlineAddress, string flightNumber)
         external
+        requireIsOperational
     {
         _registerFlight(airlineAddress, flightNumber);
     }
 
     function _registerFlight(address airlineAddress, string flightNumber)
         private
+        requireIsOperational
     {
         // uint256 timestamp = block.timestamp;
         bytes32 flightKey = keccak256(
@@ -179,7 +195,12 @@ contract FlightSuretyData {
         flightsLookup.push(flightKey);
     }
 
-    function getFlightsLookup() external view returns (bytes32[] memory) {
+    function getFlightsLookup()
+        external
+        view
+        requireIsOperational
+        returns (bytes32[] memory)
+    {
         return flightsLookup;
     }
 
@@ -188,12 +209,15 @@ contract FlightSuretyData {
         uint256 amount,
         address buyer
     ) external payable {
-        Insurance[] storage  ins = insuranceBought[flightKey];
+        Insurance[] storage ins = insuranceBought[flightKey];
 
         ins.push(Insurance(buyer, amount, 0));
     }
 
-    function creditPassengerInsurance(bytes32 flightKey) external {
+    function creditPassengerInsurance(bytes32 flightKey)
+        external
+        requireIsOperational
+    {
         Insurance[] storage ins = insuranceBought[flightKey];
         for (uint8 i = 0; i <= ins.length; i++) {
             ins[i].creditAmount = ins[i].amount + (ins[i].amount) / 2;
@@ -203,7 +227,10 @@ contract FlightSuretyData {
     }
 
     // Withdraw Funds to Insured Passanger Account.
-    function withdrawInsurancePayout(address passengerAddress) external {
+    function withdrawInsurancePayout(address passengerAddress)
+        external
+        requireIsOperational
+    {
         uint256 amount = passengerAmountToCollect[passengerAddress];
         passengerAmountToCollect[passengerAddress] = 0;
 
