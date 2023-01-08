@@ -232,19 +232,19 @@ contract FlightSuretyApp {
 
     // Generate a request for oracles to fetch flight information
     function fetchFlightStatus(
-        //  address airline,
-        //  string flight,
-        //  uint256 timestamp
-        bytes32 flightKey
+          address airline,
+          string flight,
+          uint256 timestamp
+       
     ) external {
         uint8 index = getRandomIndex(msg.sender);
 
-        (
-            string memory flight,
-            uint256 timestamp,
-            address airline,
-            uint8 statusCode
-        ) = flightSuretyDataContract.getFlightInfo(flightKey);
+      //  (
+      //      string memory flight,
+      //      uint256 timestamp,
+     //       address airline,
+      //      uint8 statusCode
+     //   ) = flightSuretyDataContract.getFlightInfo(flightKey);
         // Generate a unique key for storing the request
         bytes32 key = keccak256(
             abi.encodePacked(index, airline, flight, timestamp)
