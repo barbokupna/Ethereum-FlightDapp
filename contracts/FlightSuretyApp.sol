@@ -23,7 +23,12 @@ contract FlightSuretyApp {
     uint8 private constant STATUS_CODE_LATE_TECHNICAL = 40;
     uint8 private constant STATUS_CODE_LATE_OTHER = 50;
 
+    uint256 private constant AIRLINE_REGISTRATION_FEE = 10 ether;
+    uint256 private constant PASSANGER_MAX_INSURANCE = 1 ether;
+    uint256 private constant AIRLINE_REGISTRATION_VOTE = 4;
+
     address private contractOwner; // Account used to deploy contract
+    bool private operational = true; // Blocks all state changes throughout the contract if false
 
     struct Flight {
         bool isRegistered;
@@ -32,6 +37,14 @@ contract FlightSuretyApp {
         address airline;
     }
     mapping(bytes32 => Flight) private flights;
+
+    mapping(address => address[]) airlinesToRegister;
+
+    // Constructor
+    constructor(address contractData) public {
+        contractOwner = msg.sender;
+        flightSuretyDataContract = IFlightSuretyData(contractData);
+    }
 
     /********************************************************************************************/
     /*                                       FUNCTION MODIFIERS                                 */
@@ -47,7 +60,7 @@ contract FlightSuretyApp {
      */
     modifier requireIsOperational() {
         // Modify to call data contract's status
-        require(true, "Contract is currently not operational");
+        require(operational, "Contract is currently not operational");
         _; // All modifiers require an "_" which indicates where the function body will be added
     }
 
@@ -59,41 +72,70 @@ contract FlightSuretyApp {
         _;
     }
 
-    /********************************************************************************************/
-    /*                                       CONSTRUCTOR                                        */
-    /********************************************************************************************/
-
-    /**
-     * @dev Contract constructor
-     *
-     */
-    constructor(address contractData) public {
-        contractOwner = msg.sender;
-        flightSuretyDataContract = IFlightSuretyData(contractData);
+    // Check if the airline being registered is already not registered.
+    modifier requireAirlineNOTRegistered(address airlineAddress) {
+        (bool isRegistered, ) = flightSuretyDataContract.getAirlineInfo(
+            airlineAddress
+        );
+        require(!isRegistered, "Airline Already Registered");
+        _;
     }
 
-    /********************************************************************************************/
-    /*                                       UTILITY FUNCTIONS                                  */
-    /********************************************************************************************/
+    // Check if the airline registering NEW one is Active
+    modifier requireAirlineActive(address airlineAddress) {
+        (, uint256 amount) = flightSuretyDataContract.getAirlineInfo(
+            airlineAddress
+        );
+        bool isActive = (amount >= AIRLINE_REGISTRATION_FEE);
+        require(isActive, "Airline NOT Active. Can't Register New Airline.");
+        _;
+    }
 
-    function isOperational() public pure returns (bool) {
-        return true; // Modify to call data contract's status
+    // UTLITY FUNCTIONS:
+    function isOperational() public returns (bool) {
+        return operational;
+    }
+
+    function setOperatingStatus(bool mode) external requireContractOwner {
+        operational = mode;
     }
 
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/
 
-    /**
-     * @dev Add an airline to the registration queue
-     *
-     */
-
+    // Register New Airline:
+    // - IF Active Airline > 5 => Need Consensus of 50 % of the Active Airline
     function registerAirline(address airlineAddress, string name)
         external
+        requireIsOperational
+        requireAirlineNOTRegistered(airlineAddress)
         returns (bool success, uint256 votes)
     {
-        flightSuretyDataContract.registerAirline(airlineAddress, name);
+        address[] memory activeAirline = flightSuretyDataContract
+            .getActivatedAirlines();
+        if (activeAirline.length <= AIRLINE_REGISTRATION_VOTE) {
+            flightSuretyDataContract.registerAirline(airlineAddress, name);
+        } else {
+
+            address[] storage votedAirlines = airlinesToRegister[airlineAddress];
+            for (uint8 i =0; i< votedAirlines.length; i++)
+            {
+                if(votedAirlines[i] == msg.sender)
+                {
+                    require(false, "Airline Already Voted!");
+                }
+            }
+            votedAirlines.push(msg.sender);
+            if(votedAirlines.length > ( activeAirline.length / 2)) 
+            {
+                flightSuretyDataContract.registerAirline(airlineAddress, name);
+            }
+            else 
+            {
+                require(false, "Consensus of 50% Votes from Active Airlines NOT met.");
+            }
+        }
 
         return (true, 0);
     }
@@ -101,12 +143,17 @@ contract FlightSuretyApp {
     function getRegisteredAirlines()
         external
         view
+        requireIsOperational
         returns (address[] memory airlineAddresses)
     {
         return flightSuretyDataContract.getRegisteredAirlines();
     }
 
-    function fundAirline(address airlineAddress, uint256 amount) external {
+    // Fund Airline. 10 ETH required to Make it Active.
+    function fundAirline(address airlineAddress, uint256 amount)
+        external
+        requireIsOperational
+    {
         // TODO -Check value, transfer to contract.
         flightSuretyDataContract.fundAirline(airlineAddress, amount);
     }
@@ -114,6 +161,7 @@ contract FlightSuretyApp {
     function getActivatedAirlines()
         external
         view
+        requireIsOperational
         returns (address[] memory airlineAddresses)
     {
         return flightSuretyDataContract.getActivatedAirlines();
@@ -121,6 +169,7 @@ contract FlightSuretyApp {
 
     function registerFlight(address airlineAddress, string flightNumber)
         external
+        requireIsOperational
         returns (address votes)
     {
         flightSuretyDataContract.registerFlight(airlineAddress, flightNumber);
@@ -128,17 +177,24 @@ contract FlightSuretyApp {
         return (airlineAddress);
     }
 
-    function getRegisteredFlights() external view returns (bytes32[] memory) {
+    function getRegisteredFlights()
+        external
+        view
+        requireIsOperational
+        returns (bytes32[] memory)
+    {
         return flightSuretyDataContract.getFlightsLookup();
     }
 
-    function buyInsurance(bytes32 flightKey, uint256 amount) external {
+    function buyInsurance(bytes32 flightKey, uint256 amount)
+        external
+        requireIsOperational
+    {
         flightSuretyDataContract.buyInsurance(flightKey, amount, msg.sender);
     }
 
-    function payPassenger() external
-    {
-        flightSuretyDataContract.payPassenger(msg.sender);
+    function withdrawInsurancePayout() external requireIsOperational {
+        flightSuretyDataContract.withdrawInsurancePayout(msg.sender);
     }
 
     /**
@@ -152,7 +208,7 @@ contract FlightSuretyApp {
         uint8 statusCode
     ) internal {
         if (statusCode == STATUS_CODE_LATE_AIRLINE) {
-            flightSuretyDataContract.creditPassengerImsurance();
+            //  flightSuretyDataContract.creditPassengerInsurance(flightKey);();
         }
     }
 
@@ -347,12 +403,18 @@ interface IFlightSuretyData {
 
     function getActivatedAirlines() external view returns (address[] memory);
 
+    function getAirlineInfo(address airlineAddress)
+        external
+        view
+        returns (bool isRegistered, uint256 amount);
+
     // flights
     function registerFlight(address airlineAddress, string flightNumber)
         external;
 
     function getFlightsLookup() external view returns (bytes32[] memory);
 
+    // Insurance
     function buyInsurance(
         bytes32 flightKey,
         uint256 amount,
@@ -361,5 +423,5 @@ interface IFlightSuretyData {
 
     function creditPassengerInsurance(bytes32 flightKey) external;
 
-    function payPassenger(address passengerAddress) external;
+    function withdrawInsurancePayout(address passengerAddress) external;
 }

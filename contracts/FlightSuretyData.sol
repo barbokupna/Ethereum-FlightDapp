@@ -17,6 +17,7 @@ contract FlightSuretyData {
     struct Insurance {
         address passenger;
         uint256 amount;
+        uint256 creditAmount;
     }
 
     /********************************************************************************************/
@@ -35,7 +36,7 @@ contract FlightSuretyData {
     mapping(bytes32 => Flight) flights;
     bytes32[] flightsLookup;
 
-    mapping(string => Insurance[]) insuranceBought;
+    mapping(bytes32 => Insurance[]) insuranceBought;
     mapping(address => uint256) passengerAmountToCollect;
 
     /********************************************************************************************/
@@ -130,6 +131,15 @@ contract FlightSuretyData {
         return airlinesRegisteredLookup;
     }
 
+    function getAirlineInfo(address airlineAddress)
+        external
+        view
+        requireIsOperational
+        returns (bool isRegistered, uint256 amount)
+    {
+       return (airlinesRegistered[airlineAddress].isRegistered, airlinesRegistered[airlineAddress].amount);
+    }
+
     function fundAirline(address airlineAddress, uint256 amount) external {
         airlinesActivatedLookup.push(airlineAddress);
 
@@ -178,27 +188,26 @@ contract FlightSuretyData {
         uint256 amount,
         address buyer
     ) external payable {
-        Insurance[] ins = insuranceBought[flightKey];
-        ins.push(Insurance(buyer, amount));
+        Insurance[] storage  ins = insuranceBought[flightKey];
+
+        ins.push(Insurance(buyer, amount, 0));
     }
 
     function creditPassengerInsurance(bytes32 flightKey) external {
-        Insurance[] ins = insuranceBought[flightKey];
+        Insurance[] storage ins = insuranceBought[flightKey];
         for (uint8 i = 0; i <= ins.length; i++) {
             ins[i].creditAmount = ins[i].amount + (ins[i].amount) / 2;
             ins[i].amount = 0;
-            passengerAmountToCollect[ins.passenger] = ins[i].creditAmount;
+            passengerAmountToCollect[ins[i].passenger] = ins[i].creditAmount;
         }
     }
 
-    /**
-     *  @dev Transfers eligible payout funds to insuree
-     *
-     */
-    function payPassenger(address passengerAddress) external {
+    // Withdraw Funds to Insured Passanger Account.
+    function withdrawInsurancePayout(address passengerAddress) external {
         uint256 amount = passengerAmountToCollect[passengerAddress];
         passengerAmountToCollect[passengerAddress] = 0;
-        payable(passengerAddress).transfer(amount);
+
+        passengerAddress.transfer((amount)); // NOTE using payable was trowing an ERROR.
     }
 
     function getFlightKey(
@@ -209,11 +218,8 @@ contract FlightSuretyData {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
     }
 
-    /**
-     * @dev Fallback function for funding smart contract.
-     *
-     */
-    function() external payable {
-        fund();
-    }
+    //  COMMENTED OUt Since it was causing compiler errors.
+    //function() external payable {
+    //    fund();
+    // }
 }
