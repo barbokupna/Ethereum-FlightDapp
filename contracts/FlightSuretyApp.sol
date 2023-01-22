@@ -196,7 +196,7 @@ contract FlightSuretyApp {
         external
         requireIsOperational
     {
-         require(
+        require(
             amount <= PASSANGER_MAX_INSURANCE,
             "MAX Passenget Insurance to Purchase = 1 Eth"
         );
@@ -232,19 +232,12 @@ contract FlightSuretyApp {
 
     // Generate a request for oracles to fetch flight information
     function fetchFlightStatus(
-          address airline,
-          string flight,
-          uint256 timestamp
-       
+        address airline,
+        string flight,
+        uint256 timestamp
     ) external {
         uint8 index = getRandomIndex(msg.sender);
 
-      //  (
-      //      string memory flight,
-      //      uint256 timestamp,
-     //       address airline,
-      //      uint8 statusCode
-     //   ) = flightSuretyDataContract.getFlightInfo(flightKey);
         // Generate a unique key for storing the request
         bytes32 key = keccak256(
             abi.encodePacked(index, airline, flight, timestamp)
@@ -348,7 +341,7 @@ contract FlightSuretyApp {
             (oracles[msg.sender].indexes[0] == index) ||
                 (oracles[msg.sender].indexes[1] == index) ||
                 (oracles[msg.sender].indexes[2] == index),
-            "Index does not match oracle request"
+            "Index does not match oracle request" 
         );
 
         bytes32 key = keccak256(
