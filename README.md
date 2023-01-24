@@ -51,7 +51,6 @@ Passengers can purchase insurance prior to a flight and if the flight is delayed
     - npm install
     - truffle compile
     - truffle migrate -reset
-
     - npm run dapp 
     - npm run server
     
