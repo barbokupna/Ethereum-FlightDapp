@@ -9,7 +9,6 @@ Passengers can purchase insurance prior to a flight and if the flight is delayed
 * [Features](#features)
 * [Requirements](#Requirements)
 * [Development](#development)
-* [Deployment](#deployment)
 * [Resources](#resources)
 
 ## Features
