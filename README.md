@@ -1,5 +1,5 @@
 # Ethereum-FlightSurety
-![BlockchainFlight](readmeImage.jpeg)
+![BlockchainFlight](readmeImage.jpg)
 This is an example of Flight delay insurance Dapp.
 Pasangers can purchase an insurance prior to a flight and if the flight is delayed they will be payout 1.5 times the amount paid for the insurance.
 
