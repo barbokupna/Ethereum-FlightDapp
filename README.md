@@ -1,16 +1,16 @@
 # Ethereum-FlightSurety
- ![BlockchainFlight](images/townhouses.jpeg)
+![BlockchainFlight](images/townhouses.jpeg)
 This is an example of Flight delay insurance Dapp.
 Pasangers can purchase an insurance prior to a flight and if the flight is delayed they will be payout 1.5 times the amount paid for the insurance.
 
- ## Table of Contents
+
+## Table of Contents
 
 * [Features](#features)
 * [Requirements](#Requirements)
 * [Development](#development)
 * [Deployment](#deployment)
 * [Resources](#resources)
-
 
 ## Features
 
@@ -20,18 +20,19 @@ Pasangers can purchase an insurance prior to a flight and if the flight is delay
 * Server App to simulate Oracles.
 
 ## Requirements:
-    Airlines: 
+
+* Airlines: 
     - First Airline registered when the contract is deployed
     - Only existing airlines can register new arline unltil there is four regitered airlines
     - Starting with the fifth airline registration requires multi-party consesnsus of 50%.
     - Airline can be registered but can't participate untill it submits funding of 10Eth. 
     
-    Passengers:
+* Passengers:
     - May pay up to 1 Eth for flight insurance
     - If flight is delayed due to airline fault, the passenger gets his/her account credited for 1.5 times the amout paid
     - Funds are transefred from the contract to passenger wallet only when the withdrawal  is initiated by the passenger
 
-    Oracles:
+* Oracles:
     - Implemnted as a server app
     - On startup 20+ oracles are registered and their assigned indexes are persisted in memory
     - Client Dapp is used to trigger flight status which generates Oracle request event captured by server
