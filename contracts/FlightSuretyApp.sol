@@ -4,10 +4,21 @@ pragma solidity ^0.4.25;
 // OpenZeppelin's SafeMath library, when used correctly, protects agains such bugs
 // More info: https://www.nccgroup.trust/us/about-us/newsroom-and-events/blog/2018/november/smart-contract-insecurity-bad-arithmetic/
 
+// WHEN Using Safemath - I get parsing error :
+// SafeMath.sol:23:19: ParserError: Expected ';' but got '{'
+//        unchecked {
+// More information about it in the blog below. Loks like a parsing error that was fixed but requires 
+//https://github.com/solidity-parser/parser/issues/44
+//import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
+
 /************************************************** */
 /* FlightSurety Smart Contract                      */
 /************************************************** */
 contract FlightSuretyApp {
+    // using SafeMath for uint256;
+    
+    
     // INterface to the Data Contract
     IFlightSuretyData flightSuretyDataContract;
 

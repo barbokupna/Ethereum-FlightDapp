@@ -1,6 +1,15 @@
 pragma solidity ^0.4.25;
 
+// WHEN Using Safemath - I get parsing error :
+// SafeMath.sol:23:19: ParserError: Expected ';' but got '{'
+//        unchecked {
+// More information about it in the blog below. Loks like a parsing error that was fixed but requires 
+//https://github.com/solidity-parser/parser/issues/44
+//import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
+
 contract FlightSuretyData {
+     // using SafeMath for uint256;
     struct Airline {
         bool isRegistered;
         string name;
